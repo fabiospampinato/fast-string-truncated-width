@@ -34,6 +34,7 @@ result2.width; // => 2, the visual width of the string once printed to the termi
 result2.index; // => 7, the end index at which the string should be sliced to truncate it correctly
 
 // Let's actually truncate a string
+// If you are truncating a string that may contain ANSI escapes you'll probaly want to put a "reset" escape after the sliced portion of the input
 
 const input = '\x1b[31mhello';
 const options = { limit: 3, ellipsis: '…' };
