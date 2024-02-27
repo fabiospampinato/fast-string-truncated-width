@@ -32,6 +32,13 @@ result2.truncated; // => true, the string doesn't fit within the width limit, it
 result2.ellipsed; // => true, the ellipsis string should be appended to the string (this isn't always the case, for example if our limit is 0)
 result2.width; // => 2, the visual width of the string once printed to the terminal (this doesn't account for the width of the ellipsis string itself)
 result2.index; // => 7, the end index at which the string should be sliced to truncate it correctly
+
+// Let's actually truncate a string
+
+const input = '\x1b[31mhello';
+const options = { limit: 3, ellipsis: '…' };
+const result3 = fastStringTruncatedWidth ( input, options );
+const output = `${input.slice ( 0, result3.index )}${result3.ellipsed ? options.ellipsis : ''}`; // => '\x1b[31mhe…'
 ```
 
 ## License
