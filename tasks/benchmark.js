@@ -4,15 +4,16 @@
 import benchmark from 'benchloop';
 // import stringWidth from 'string-width';
 import fastStringTruncatedWidth from '../dist/index.js';
+// import {getTruncated} from '../test/fixtures.js';
 
 /* HELPERS */
 
 const IMPLEMENTATIONS = [
   // [Bun.stringWidth, 'bun'],
   // [stringWidth, 'string-width'],
-  [fastStringTruncatedWidth, 'fast-string-truncated-width']
+  [fastStringTruncatedWidth, 'fast-string-truncated-width'],
+  // [getTruncated, 'fast-string-truncated-width+truncation']
 ];
-
 
 const INPUTS = [
   ['helloworld', 'ascii'],

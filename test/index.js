@@ -3,19 +3,9 @@
 
 import {describe} from 'fava';
 import fastStringTruncatedWidth from '../dist/index.js';
+import {getWidth, getTruncated} from './fixtures.js';
 
 /* HELPERS */
-
-const getWidth = ( input, widthOptions ) => {
-  return fastStringTruncatedWidth ( input, {}, widthOptions ).width;
-};
-
-const truncate = ( input, truncationOptions, widthOptions ) => {
-  const ellipsis = truncationOptions.ellipsis ?? '';
-  const result = fastStringTruncatedWidth ( input, truncationOptions, widthOptions );
-  const line = `${input.slice ( 0, result.index )}${result.ellipsed ? ellipsis : ''}`;
-  return line;
-};
 
 /* MAIN */
 
@@ -36,7 +26,6 @@ describe ( 'Fast String Width', () => {
 
     it ( 'supports strings that do need to be truncated', t => {
 
-      debugger;
       const result = fastStringTruncatedWidth ( '\x1b[31mhello', { limit: 3, ellipsis: '…' } );
 
       t.is ( result.truncated, true );
@@ -170,90 +159,90 @@ describe ( 'Fast String Width', () => {
 
     it ( 'supports latin characters', t => {
 
-      t.is ( truncate ( 'hello', { limit: 10, ellipsis: '…' } ), 'hello' );
-      t.is ( truncate ( 'hello', { limit: 5, ellipsis: '…' } ), 'hello' );
-      t.is ( truncate ( 'hello', { limit: 4, ellipsis: '…' } ), 'hel…' );
-      t.is ( truncate ( 'hello', { limit: 3, ellipsis: '…' } ), 'he…' );
-      t.is ( truncate ( 'hello', { limit: 2, ellipsis: '…' } ), 'h…' );
-      t.is ( truncate ( 'hello', { limit: 1, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( 'hello', { limit: 0, ellipsis: '…' } ), '' );
+      t.is ( getTruncated ( 'hello', { limit: 10, ellipsis: '…' } ), 'hello' );
+      t.is ( getTruncated ( 'hello', { limit: 5, ellipsis: '…' } ), 'hello' );
+      t.is ( getTruncated ( 'hello', { limit: 4, ellipsis: '…' } ), 'hel…' );
+      t.is ( getTruncated ( 'hello', { limit: 3, ellipsis: '…' } ), 'he…' );
+      t.is ( getTruncated ( 'hello', { limit: 2, ellipsis: '…' } ), 'h…' );
+      t.is ( getTruncated ( 'hello', { limit: 1, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( 'hello', { limit: 0, ellipsis: '…' } ), '' );
 
-      t.is ( truncate ( 'hello', { limit: 10, ellipsis: '..' } ), 'hello' );
-      t.is ( truncate ( 'hello', { limit: 5, ellipsis: '..' } ), 'hello' );
-      t.is ( truncate ( 'hello', { limit: 4, ellipsis: '..' } ), 'he..' );
-      t.is ( truncate ( 'hello', { limit: 3, ellipsis: '..' } ), 'h..' );
-      t.is ( truncate ( 'hello', { limit: 2, ellipsis: '..' } ), '..' );
-      t.is ( truncate ( 'hello', { limit: 1, ellipsis: '..' } ), '' );
-      t.is ( truncate ( 'hello', { limit: 0, ellipsis: '..' } ), '' );
+      t.is ( getTruncated ( 'hello', { limit: 10, ellipsis: '..' } ), 'hello' );
+      t.is ( getTruncated ( 'hello', { limit: 5, ellipsis: '..' } ), 'hello' );
+      t.is ( getTruncated ( 'hello', { limit: 4, ellipsis: '..' } ), 'he..' );
+      t.is ( getTruncated ( 'hello', { limit: 3, ellipsis: '..' } ), 'h..' );
+      t.is ( getTruncated ( 'hello', { limit: 2, ellipsis: '..' } ), '..' );
+      t.is ( getTruncated ( 'hello', { limit: 1, ellipsis: '..' } ), '' );
+      t.is ( getTruncated ( 'hello', { limit: 0, ellipsis: '..' } ), '' );
 
     });
 
     it ( 'supports ansi characters', t => {
 
-      t.is ( truncate ( '\x1b[31mhello', { limit: 10, ellipsis: '…' } ), '\x1b[31mhello' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 5, ellipsis: '…' } ), '\x1b[31mhello' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 4, ellipsis: '…' } ), '\x1b[31mhel…' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 3, ellipsis: '…' } ), '\x1b[31mhe…' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 2, ellipsis: '…' } ), '\x1b[31mh…' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 1, ellipsis: '…' } ), '\x1b[31m…' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 0, ellipsis: '…' } ), '\x1b[31m' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 10, ellipsis: '…' } ), '\x1b[31mhello' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 5, ellipsis: '…' } ), '\x1b[31mhello' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 4, ellipsis: '…' } ), '\x1b[31mhel…' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 3, ellipsis: '…' } ), '\x1b[31mhe…' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 2, ellipsis: '…' } ), '\x1b[31mh…' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 1, ellipsis: '…' } ), '\x1b[31m…' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 0, ellipsis: '…' } ), '\x1b[31m' );
 
-      t.is ( truncate ( '\x1b[31mhello', { limit: 10, ellipsis: '..' } ), '\x1b[31mhello' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 5, ellipsis: '..' } ), '\x1b[31mhello' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 4, ellipsis: '..' } ), '\x1b[31mhe..' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 3, ellipsis: '..' } ), '\x1b[31mh..' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 2, ellipsis: '..' } ), '\x1b[31m..' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 1, ellipsis: '..' } ), '\x1b[31m' );
-      t.is ( truncate ( '\x1b[31mhello', { limit: 0, ellipsis: '..' } ), '\x1b[31m' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 10, ellipsis: '..' } ), '\x1b[31mhello' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 5, ellipsis: '..' } ), '\x1b[31mhello' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 4, ellipsis: '..' } ), '\x1b[31mhe..' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 3, ellipsis: '..' } ), '\x1b[31mh..' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 2, ellipsis: '..' } ), '\x1b[31m..' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 1, ellipsis: '..' } ), '\x1b[31m' );
+      t.is ( getTruncated ( '\x1b[31mhello', { limit: 0, ellipsis: '..' } ), '\x1b[31m' );
 
     });
 
     it ( 'supports control characters', t => {
 
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 10, ellipsis: '…' } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 4, ellipsis: '…' } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 3, ellipsis: '…' } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 2, ellipsis: '…' } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 1, ellipsis: '…' } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 0, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 10, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 4, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 3, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 2, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 1, ellipsis: '…' } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 0, ellipsis: '…' } ), '\x00\x01\x02\x03' );
 
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 10, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 4, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01\x02\x03' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 3, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01…' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 2, ellipsis: '…' }, { controlWidth: 1 } ), '\x00…' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 1, ellipsis: '…' }, { controlWidth: 1 } ), '…' );
-      t.is ( truncate ( '\x00\x01\x02\x03', { limit: 0, ellipsis: '…' }, { controlWidth: 1 } ), '' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 10, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 4, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01\x02\x03' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 3, ellipsis: '…' }, { controlWidth: 1 } ), '\x00\x01…' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 2, ellipsis: '…' }, { controlWidth: 1 } ), '\x00…' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 1, ellipsis: '…' }, { controlWidth: 1 } ), '…' );
+      t.is ( getTruncated ( '\x00\x01\x02\x03', { limit: 0, ellipsis: '…' }, { controlWidth: 1 } ), '' );
 
     });
 
     it ( 'supports CJK characters', t => {
 
-      t.is ( truncate ( '古池や', { limit: 10, ellipsis: '…' } ), '古池や' );
-      t.is ( truncate ( '古池や', { limit: 6, ellipsis: '…' } ), '古池や' );
-      t.is ( truncate ( '古池や', { limit: 5, ellipsis: '…' } ), '古池…' );
-      t.is ( truncate ( '古池や', { limit: 4, ellipsis: '…' } ), '古…' );
-      t.is ( truncate ( '古池や', { limit: 3, ellipsis: '…' } ), '古…' );
-      t.is ( truncate ( '古池や', { limit: 2, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '古池や', { limit: 1, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '古池や', { limit: 0, ellipsis: '…' } ), '' );
+      t.is ( getTruncated ( '古池や', { limit: 10, ellipsis: '…' } ), '古池や' );
+      t.is ( getTruncated ( '古池や', { limit: 6, ellipsis: '…' } ), '古池や' );
+      t.is ( getTruncated ( '古池や', { limit: 5, ellipsis: '…' } ), '古池…' );
+      t.is ( getTruncated ( '古池や', { limit: 4, ellipsis: '…' } ), '古…' );
+      t.is ( getTruncated ( '古池や', { limit: 3, ellipsis: '…' } ), '古…' );
+      t.is ( getTruncated ( '古池や', { limit: 2, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '古池や', { limit: 1, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '古池や', { limit: 0, ellipsis: '…' } ), '' );
 
     });
 
     it ( 'supports emoji characters', t => {
 
-      t.is ( truncate ( '👶👶🏽', { limit: 10, ellipsis: '…' } ), '👶👶🏽' );
-      t.is ( truncate ( '👶👶🏽', { limit: 4, ellipsis: '…' } ), '👶👶🏽' );
-      t.is ( truncate ( '👶👶🏽', { limit: 3, ellipsis: '…' } ), '👶…' );
-      t.is ( truncate ( '👶👶🏽', { limit: 2, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '👶👶🏽', { limit: 1, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '👶👶🏽', { limit: 0, ellipsis: '…' } ), '' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 10, ellipsis: '…' } ), '👶👶🏽' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 4, ellipsis: '…' } ), '👶👶🏽' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 3, ellipsis: '…' } ), '👶…' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 2, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 1, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '👶👶🏽', { limit: 0, ellipsis: '…' } ), '' );
 
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 10, ellipsis: '…' } ), '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨' );
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 4, ellipsis: '…' } ), '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨' );
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 3, ellipsis: '…' } ), '👩‍👩‍👦‍👦…' );
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 2, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 1, ellipsis: '…' } ), '…' );
-      t.is ( truncate ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 0, ellipsis: '…' } ), '' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 10, ellipsis: '…' } ), '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 4, ellipsis: '…' } ), '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 3, ellipsis: '…' } ), '👩‍👩‍👦‍👦…' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 2, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 1, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 0, ellipsis: '…' } ), '' );
 
     });
 
