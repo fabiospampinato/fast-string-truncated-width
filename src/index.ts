@@ -23,7 +23,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
   const LIMIT = truncationOptions.limit ?? Infinity;
   const ELLIPSIS = truncationOptions.ellipsis ?? '';
-  const ELLIPSIS_WIDTH = ELLIPSIS ? getStringTruncatedWidth ( ELLIPSIS, NO_TRUNCATION, widthOptions ).width : 0;
+  const ELLIPSIS_WIDTH = truncationOptions?.ellipsisWidth ?? ( ELLIPSIS ? getStringTruncatedWidth ( ELLIPSIS, NO_TRUNCATION, widthOptions ).width : 0 );
 
   const ANSI_WIDTH = widthOptions.ansiWidth ?? 0;
   const CONTROL_WIDTH = widthOptions.controlWidth ?? 0;

@@ -3,7 +3,8 @@
 
 type TruncationOptions = {
   limit?: number,
-  ellipsis?: string
+  ellipsis?: string,
+  ellipsisWidth?: number
 };
 
 type WidthOptions = {
