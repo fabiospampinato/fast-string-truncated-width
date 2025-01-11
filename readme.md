@@ -7,7 +7,7 @@ This is a low-level function that basically calculates the visual width of a str
 ## Install
 
 ```sh
-npm install --save fast-string-truncated-width
+npm install fast-string-truncated-width
 ```
 
 ## Usage
@@ -15,9 +15,22 @@ npm install --save fast-string-truncated-width
 ```ts
 import fastStringTruncatedWidth from 'fast-string-truncated-width';
 
+// The width of various classes of characters is configurable
+
+const widthOptions = {
+  ansiWidth: 0,
+  controlWidth: 0,
+  tabWidth: 8,
+  ambiguousWidth: 1,
+  emojiWidth: 2,
+  fullWidthWidth: 2,
+  regularWidth: 1,
+  wideWidth: 2
+};
+
 // Retrieving the result for a string that fits within our width limit
 
-const result1 = fastStringTruncatedWidth ( '\x1b[31mhello', { limit: Infinity, ellipsis: '…' } );
+const result1 = fastStringTruncatedWidth ( '\x1b[31mhello', { limit: Infinity, ellipsis: '…' }, widthOptions );
 
 result1.truncated; // => false, the string fits within the width limit, it doesn't have to be truncated
 result1.ellipsed; // => false, the ellipsis string doesn't need to be appended to the string
@@ -26,7 +39,7 @@ result1.index; // => 10, the end index at which the string should be sliced, equ
 
 // Retrieving the result for a string that doesn't fit within our width limit
 
-const result2 = fastStringTruncatedWidth ( '\x1b[31mhello', { limit: 3, ellipsis: '…' } );
+const result2 = fastStringTruncatedWidth ( '\x1b[31mhello', { limit: 3, ellipsis: '…' }, widthOptions );
 
 result2.truncated; // => true, the string doesn't fit within the width limit, it has to be truncated
 result2.ellipsed; // => true, the ellipsis string should be appended to the string (this isn't always the case, for example if our limit is 0)
@@ -38,7 +51,7 @@ result2.index; // => 7, the end index at which the string should be sliced to tr
 
 const input = '\x1b[31mhello';
 const options = { limit: 3, ellipsis: '…' };
-const result3 = fastStringTruncatedWidth ( input, options );
+const result3 = fastStringTruncatedWidth ( input, options, widthOptions );
 const output = `${input.slice ( 0, result3.index )}${result3.ellipsed ? options.ellipsis : ''}`; // => '\x1b[31mhe…'
 ```
 
