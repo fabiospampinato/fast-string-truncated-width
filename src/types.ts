@@ -11,6 +11,7 @@ type WidthOptions = {
   /* SPECIAL */
   ansiWidth?: number,
   controlWidth?: number,
+  tabWidth?: number,
   /* UNICODE */
   ambiguousWidth?: number,
   emojiWidth?: number,

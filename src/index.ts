@@ -7,7 +7,8 @@ import type {TruncationOptions, WidthOptions, Result} from './types';
 /* HELPERS */
 
 const ANSI_RE = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/y;
-const CONTROL_RE = /[\x00-\x1F\x7F-\x9F]{1,1000}/y;
+const CONTROL_RE = /[\x00-\x08\x0A-\x1F\x7F-\x9F]{1,1000}/y;
+const TAB_RE = /\t{1,1000}/y;
 const EMOJI_RE = /(?:\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F)(?:\u200d(?:\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F))*/yu;
 const LATIN_RE = /[\x20-\x7E\xA0-\xFF]{1,1000}/y;
 const MODIFIER_RE = /\p{M}+/gu;
@@ -27,6 +28,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
   const ANSI_WIDTH = widthOptions.ansiWidth ?? 0;
   const CONTROL_WIDTH = widthOptions.controlWidth ?? 0;
+  const TAB_WIDTH = widthOptions.tabWidth ?? 8;
 
   const AMBIGUOUS_WIDTH = widthOptions.ambiguousWidth ?? 1;
   const EMOJI_WIDTH = widthOptions.emojiWidth ?? 2;
@@ -170,6 +172,33 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
       unmatchedStart = indexPrev;
       unmatchedEnd = index;
       index = indexPrev = CONTROL_RE.lastIndex;
+
+      continue;
+
+    }
+
+    /* TAB */
+
+    TAB_RE.lastIndex = index;
+
+    if ( TAB_RE.test ( input ) ) {
+
+      lengthExtra = TAB_RE.lastIndex - index;
+      widthExtra = lengthExtra * TAB_WIDTH;
+
+      if ( ( width + widthExtra ) > truncationLimit ) {
+        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / TAB_WIDTH ) );
+      }
+
+      if ( ( width + widthExtra ) > LIMIT ) {
+        truncationEnabled = true;
+        break;
+      }
+
+      width += widthExtra;
+      unmatchedStart = indexPrev;
+      unmatchedEnd = index;
+      index = indexPrev = TAB_RE.lastIndex;
 
       continue;
 

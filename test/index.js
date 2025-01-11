@@ -76,6 +76,14 @@ describe ( 'Fast String Width', () => {
 
     });
 
+    it ( 'supports tab characters', t => {
+
+      t.is ( getWidth ( '\t' ), 8 );
+      t.is ( getWidth ( '\t\t\t' ), 24 );
+      t.is ( getWidth ( '\0\t\0\t\0\t\0' ), 24 );
+
+    });
+
     it ( 'supports combining characters', t => {
 
       t.is ( getWidth ( 'x\u0300' ), 1 );
