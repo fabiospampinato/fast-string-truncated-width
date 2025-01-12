@@ -96,11 +96,35 @@ describe ( 'Fast String Width', () => {
       t.is ( getWidth ( '👶🏽' ), 2 );
       t.is ( getWidth ( '👩‍👩‍👦‍👦' ), 2 );
       t.is ( getWidth ( '👨‍❤️‍💋‍👨' ), 2 );
+      t.is ( getWidth ( '🏴‍☠️' ), 2 );
+      t.is ( getWidth ( '🏴󠁧󠁢󠁷󠁬󠁳󠁿' ), 2 );
+      t.is ( getWidth ( '🇸🇪' ), 2 );
+      t.is ( getWidth ( '🇺🇳' ), 2 );
 
       t.is ( getWidth ( '👶'.repeat ( 2 ) ), 4 );
       t.is ( getWidth ( '👶🏽'.repeat ( 2 ) ), 4 );
       t.is ( getWidth ( '👩‍👩‍👦‍👦'.repeat ( 2 ) ), 4 );
       t.is ( getWidth ( '👨‍❤️‍💋‍👨'.repeat ( 2 ) ), 4 );
+      t.is ( getWidth ( '🏴‍☠️'.repeat ( 2 ) ), 4 );
+      t.is ( getWidth ( '🏴󠁧󠁢󠁷󠁬󠁳󠁿'.repeat ( 2 ) ), 4 );
+      t.is ( getWidth ( '🇸🇪'.repeat ( 2 ) ), 4 );
+      t.is ( getWidth ( '🇺🇳'.repeat ( 2 ) ), 4 );
+
+    });
+
+    it.skip ( 'supports all basic emojis', async t => {
+
+      const response = await fetch ( 'https://raw.githubusercontent.com/muan/unicode-emoji-json/main/data-by-group.json' );
+      const data = await response.json ();
+      const emojis = data.flatMap ( ({ emojis }) => emojis.map ( ({ emoji }) => emoji ) );
+
+      const failures = emojis.filter ( emoji => {
+        if ( getWidth ( emoji ) !== 2 ) {
+          return true;
+        }
+      });
+
+      t.deepEqual ( failures, [] );
 
     });
 
