@@ -296,6 +296,18 @@ describe ( 'Fast String Width', () => {
 
     });
 
+    it( 'supports "surrogate pairs" in unmatched characters', (t) => {
+
+      t.is(getTruncated("██ █", { limit: 4 }), "██ █");
+      t.is(getTruncated("██ █", { limit: 3 }), "██ ");
+      t.is(getTruncated("██ █", { limit: 2 }), "██");
+
+      t.is(getTruncated("██ █", { limit: 4, ellipsis: "…" }), "██ █");
+      t.is(getTruncated("██ █", { limit: 3, ellipsis: "…" }), "██…");
+      t.is(getTruncated("██ █", { limit: 2, ellipsis: "…" }), "█…");
+
+    });
+
   });
 
 });
