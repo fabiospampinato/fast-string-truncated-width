@@ -62,6 +62,8 @@ describe ( 'Fast String Width', () => {
       t.is ( getWidth ( '\u{845B}\u{E0100}' ), 2 );
       t.is ( getWidth ( 'ปฏัก' ), 3 );
       t.is ( getWidth ( '_\u0E34' ), 1 );
+      t.is ( getWidth ( '\n' ), 1 );
+      t.is ( getWidth ( '\x20' ), 1 );
 
     });
 
