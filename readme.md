@@ -4,6 +4,8 @@ A fast function for calculating where a string should be truncated, given a widt
 
 This is a low-level function that basically calculates the visual width of a string and the index at which it should be truncated once printed to the terminal, but taking into account an optional width limit and an optional ellipsis string, so that the string doesn't have to be processed multiple times to be truncated, and how long the part after the truncation point is doesn't cost us anything because we can just ignore it.
 
+Note that codepoints considered "ambiguous" in Unicode will always use "regularWidth" as their width, if you need to customize this you should use [`string-width`](https://www.npmjs.com/package/string-width) instead.
+
 ## Install
 
 ```sh
@@ -21,7 +23,6 @@ const widthOptions = {
   ansiWidth: 0,
   controlWidth: 0,
   tabWidth: 8,
-  ambiguousWidth: 1,
   emojiWidth: 2,
   fullWidthWidth: 2,
   regularWidth: 1,

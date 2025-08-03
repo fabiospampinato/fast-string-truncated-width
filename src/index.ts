@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isAmbiguous, isFullWidth, isWide} from './utils';
+import {isFullWidth, isWide} from './utils';
 import type {TruncationOptions, WidthOptions, Result} from './types';
 
 /* HELPERS */
@@ -30,7 +30,6 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   const CONTROL_WIDTH = widthOptions.controlWidth ?? 0;
   const TAB_WIDTH = widthOptions.tabWidth ?? 8;
 
-  const AMBIGUOUS_WIDTH = widthOptions.ambiguousWidth ?? 1;
   const EMOJI_WIDTH = widthOptions.emojiWidth ?? 2;
   const FULL_WIDTH_WIDTH = widthOptions.fullWidthWidth ?? 2;
   const REGULAR_WIDTH = widthOptions.regularWidth ?? 1;
@@ -71,8 +70,6 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
           widthExtra = FULL_WIDTH_WIDTH;
         } else if ( isWide ( codePoint ) ) {
           widthExtra = WIDE_WIDTH;
-        } else if ( AMBIGUOUS_WIDTH !== REGULAR_WIDTH && isAmbiguous ( codePoint ) ) {
-          widthExtra = AMBIGUOUS_WIDTH;
         } else {
           widthExtra = REGULAR_WIDTH;
         }

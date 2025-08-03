@@ -13,7 +13,6 @@ type WidthOptions = {
   controlWidth?: number,
   tabWidth?: number,
   /* UNICODE */
-  ambiguousWidth?: number,
   emojiWidth?: number,
   fullWidthWidth?: number,
   regularWidth?: number,
