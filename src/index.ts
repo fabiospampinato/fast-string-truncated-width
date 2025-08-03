@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import {isFullWidth, isWide} from './utils';
+import {isFullWidth, isWideNotEmoji} from './utils';
 import type {TruncationOptions, WidthOptions, Result} from './types';
 
 /* HELPERS */
@@ -68,7 +68,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
         if ( isFullWidth ( codePoint ) ) {
           widthExtra = FULL_WIDTH_WIDTH;
-        } else if ( isWide ( codePoint ) ) {
+        } else if ( isWideNotEmoji ( codePoint ) ) {
           widthExtra = WIDE_WIDTH;
         } else {
           widthExtra = REGULAR_WIDTH;
