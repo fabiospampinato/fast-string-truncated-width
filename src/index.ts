@@ -17,8 +17,6 @@ const NO_TRUNCATION: TruncationOptions = { limit: Infinity, ellipsis: '' };
 
 /* MAIN */
 
-//TODO: Optimize matching non-latin letters
-
 const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOptions = {}, widthOptions: WidthOptions = {} ): Result => {
 
   /* CONSTANTS */
