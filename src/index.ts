@@ -34,6 +34,15 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   const REGULAR_WIDTH = widthOptions.regularWidth ?? 1;
   const WIDE_WIDTH = widthOptions.wideWidth ?? 2;
 
+  const PARSE_BLOCKS: [RegExp, number][] = [
+    [LATIN_RE, REGULAR_WIDTH],
+    [ANSI_RE, ANSI_WIDTH],
+    [CONTROL_RE, CONTROL_WIDTH],
+    [TAB_RE, TAB_WIDTH],
+    [EMOJI_RE, EMOJI_WIDTH],
+    [CJKT_WIDE_RE, WIDE_WIDTH]
+  ];
+
   /* STATE */
 
   let indexPrev = 0;
@@ -93,161 +102,40 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
     /* EXITING */
 
-    if ( index >= length ) break;
-
-    /* LATIN */
-
-    LATIN_RE.lastIndex = index;
-
-    if ( LATIN_RE.test ( input ) ) {
-
-      lengthExtra = LATIN_RE.lastIndex - index;
-      widthExtra = lengthExtra * REGULAR_WIDTH;
-
-      if ( ( width + widthExtra ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / REGULAR_WIDTH ) );
-      }
-
-      if ( ( width + widthExtra ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += widthExtra;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = LATIN_RE.lastIndex;
-
-      continue;
-
+    if ( index >= length ) {
+      break outer;
     }
 
-    /* ANSI */
+    /* PARSE BLOCKS */
 
-    ANSI_RE.lastIndex = index;
+    for ( let i = 0, l = PARSE_BLOCKS.length; i < l; i++ ) {
 
-    if ( ANSI_RE.test ( input ) ) {
+      const [BLOCK_RE, BLOCK_WIDTH] = PARSE_BLOCKS[i];
 
-      if ( ( width + ANSI_WIDTH ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index );
+      BLOCK_RE.lastIndex = index;
+
+      if ( BLOCK_RE.test ( input ) ) {
+
+        lengthExtra = BLOCK_RE === EMOJI_RE ? 1 : BLOCK_RE.lastIndex - index;
+        widthExtra = lengthExtra * BLOCK_WIDTH;
+
+        if ( ( width + widthExtra ) > truncationLimit ) {
+          truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / BLOCK_WIDTH ) );
+        }
+
+        if ( ( width + widthExtra ) > LIMIT ) {
+          truncationEnabled = true;
+          break outer;
+        }
+
+        width += widthExtra;
+        unmatchedStart = indexPrev;
+        unmatchedEnd = index;
+        index = indexPrev = BLOCK_RE.lastIndex;
+
+        continue outer;
+
       }
-
-      if ( ( width + ANSI_WIDTH ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += ANSI_WIDTH;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = ANSI_RE.lastIndex;
-
-      continue;
-
-    }
-
-    /* CONTROL */
-
-    CONTROL_RE.lastIndex = index;
-
-    if ( CONTROL_RE.test ( input ) ) {
-
-      lengthExtra = CONTROL_RE.lastIndex - index;
-      widthExtra = lengthExtra * CONTROL_WIDTH;
-
-      if ( ( width + widthExtra ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / CONTROL_WIDTH ) );
-      }
-
-      if ( ( width + widthExtra ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += widthExtra;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = CONTROL_RE.lastIndex;
-
-      continue;
-
-    }
-
-    /* TAB */
-
-    TAB_RE.lastIndex = index;
-
-    if ( TAB_RE.test ( input ) ) {
-
-      lengthExtra = TAB_RE.lastIndex - index;
-      widthExtra = lengthExtra * TAB_WIDTH;
-
-      if ( ( width + widthExtra ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / TAB_WIDTH ) );
-      }
-
-      if ( ( width + widthExtra ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += widthExtra;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = TAB_RE.lastIndex;
-
-      continue;
-
-    }
-
-    /* EMOJI */
-
-    EMOJI_RE.lastIndex = index;
-
-    if ( EMOJI_RE.test ( input ) ) {
-
-      if ( ( width + EMOJI_WIDTH ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index );
-      }
-
-      if ( ( width + EMOJI_WIDTH ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += EMOJI_WIDTH;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = EMOJI_RE.lastIndex;
-
-      continue;
-
-    }
-
-    /* CJKT */
-
-    CJKT_WIDE_RE.lastIndex = index;
-
-    if ( CJKT_WIDE_RE.test ( input ) ) {
-
-      lengthExtra = CJKT_WIDE_RE.lastIndex - index;
-      widthExtra = lengthExtra * WIDE_WIDTH;
-
-      if ( ( width + widthExtra ) > truncationLimit ) {
-        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / WIDE_WIDTH ) );
-      }
-
-      if ( ( width + widthExtra ) > LIMIT ) {
-        truncationEnabled = true;
-        break;
-      }
-
-      width += widthExtra;
-      unmatchedStart = indexPrev;
-      unmatchedEnd = index;
-      index = indexPrev = CJKT_WIDE_RE.lastIndex;
-
-      continue;
 
     }
 
