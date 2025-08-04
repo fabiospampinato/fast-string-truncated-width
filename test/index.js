@@ -52,7 +52,7 @@ describe ( 'Fast String Width', () => {
       t.is ( getWidth ( 'ノード.js' ), 9 );
       t.is ( getWidth ( '你好' ), 4 );
       t.is ( getWidth ( '안녕하세요' ), 10 );
-      t.is ( getWidth ( 'A\uD83C\uDE00BC' ), 5 );
+      t.is ( getWidth ( 'A\uD83D\uDE00BC' ), 5 );
       t.is ( getWidth ( '\u001B[31m\u001B[39m' ), 0 );
       // t.is ( getWidth ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007' ), 5 ); //TODO: Maybe support these extra escapes too?
       t.is ( getWidth ( '\u{231A}' ), 2 );

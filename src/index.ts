@@ -1,13 +1,14 @@
 
 /* IMPORT */
 
-import {isFullWidth, isWideNotEmoji} from './utils';
+import {isFullWidth, isWideNotCJKTNotEmoji} from './utils';
 import type {TruncationOptions, WidthOptions, Result} from './types';
 
 /* HELPERS */
 
 const ANSI_RE = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/y;
 const CONTROL_RE = /[\x00-\x08\x0A-\x1F\x7F-\x9F]{1,1000}/y;
+const CJKT_WIDE_RE = /(?:(?![\uFF61-\uFF9F\uFF00-\uFFEF])[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Tangut}]){1,1000}/yu;
 const TAB_RE = /\t{1,1000}/y;
 const EMOJI_RE = /[\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}[\u{E0061}-\u{E007A}]{2}[\u{E0030}-\u{E0039}\u{E0061}-\u{E007A}]{1,3}\u{E007F}|(?:\p{Emoji}\uFE0F\u20E3?|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation})(?:\u200D(?:\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}|\p{Emoji}\uFE0F\u20E3?))*/yu;
 const LATIN_RE = /(?:[\x20-\x7E\xA0-\xFF](?!\uFE0F)){1,1000}/y;
@@ -68,7 +69,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
         if ( isFullWidth ( codePoint ) ) {
           widthExtra = FULL_WIDTH_WIDTH;
-        } else if ( isWideNotEmoji ( codePoint ) ) {
+        } else if ( isWideNotCJKTNotEmoji ( codePoint ) ) {
           widthExtra = WIDE_WIDTH;
         } else {
           widthExtra = REGULAR_WIDTH;
@@ -220,6 +221,33 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
       unmatchedStart = indexPrev;
       unmatchedEnd = index;
       index = indexPrev = EMOJI_RE.lastIndex;
+
+      continue;
+
+    }
+
+    /* CJKT */
+
+    CJKT_WIDE_RE.lastIndex = index;
+
+    if ( CJKT_WIDE_RE.test ( input ) ) {
+
+      lengthExtra = CJKT_WIDE_RE.lastIndex - index;
+      widthExtra = lengthExtra * WIDE_WIDTH;
+
+      if ( ( width + widthExtra ) > truncationLimit ) {
+        truncationIndex = Math.min ( truncationIndex, index + Math.floor ( ( truncationLimit - width ) / WIDE_WIDTH ) );
+      }
+
+      if ( ( width + widthExtra ) > LIMIT ) {
+        truncationEnabled = true;
+        break;
+      }
+
+      width += widthExtra;
+      unmatchedStart = indexPrev;
+      unmatchedEnd = index;
+      index = indexPrev = CJKT_WIDE_RE.lastIndex;
 
       continue;
 

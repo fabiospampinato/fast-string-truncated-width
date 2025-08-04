@@ -21,7 +21,7 @@ const INPUTS = [
   ['helloworld😀', 'ascii+emoji'],
   ['\x1b[31m😀', 'ansi+emoji'],
   ['helloworld😀\x1b[31m😀', 'ascii+ansi+emoji'],
-  // ['古池や', 'cjk']
+  ['こんにちは世界！', 'cjk']
 ];
 
 const REPETITIONS = [1, 10, 50, 100, 500, 1_000, 5_000, 25_000];
