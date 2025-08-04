@@ -185,6 +185,14 @@ describe ( 'Fast String Width', () => {
 
     });
 
+    it ( 'supports hyperlink sequences', t => {
+
+      t.is ( getWidth ( '\x1b]8;;https://github.com\u0007Click\x1b]8;;\u0007' ), 5 );
+      t.is ( getWidth ( 'twelve chars\x1b]8;;https://github.com\u0007Click\x1b]8;;\u0007twelve chars' ), 24 + 5 );
+      t.is ( getWidth ( '\x1b]8;;https://github.com\x1b\x5cClick\x1b]8;;\x1b\x5c' ), 5 );
+
+    });
+
   });
 
   describe ( 'truncating a string', it => {
