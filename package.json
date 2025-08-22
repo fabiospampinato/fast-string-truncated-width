@@ -3,7 +3,7 @@
   "repository": "github:fabiospampinato/fast-string-truncated-width",
   "description": "A fast function for calculating where a string should be truncated, given an optional width limit and an ellipsis string.",
   "license": "MIT",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "main": "dist/index.js",
   "exports": "./dist/index.js",
