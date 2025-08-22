@@ -6,8 +6,7 @@ import type {TruncationOptions, WidthOptions, Result} from './types';
 
 /* HELPERS */
 
-const ANSI_RE = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/y;
-const ANSI_URL_RE = /\u001b\]8;[^;]*;.+(?:\u0007|\u001b\u005c)(.+)\u001b\]8;;(?:\u0007|\u001b\u005c)/y;
+const ANSI_RE = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]|\u001b\]8;[^;]*;.*?(?:\u0007|\u001b\u005c)/y;
 const CONTROL_RE = /[\x00-\x08\x0A-\x1F\x7F-\x9F]{1,1000}/y;
 const CJKT_WIDE_RE = /(?:(?![\uFF61-\uFF9F\uFF00-\uFFEF])[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Tangut}]){1,1000}/yu;
 const TAB_RE = /\t{1,1000}/y;
@@ -35,14 +34,13 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   const REGULAR_WIDTH = widthOptions.regularWidth ?? 1;
   const WIDE_WIDTH = widthOptions.wideWidth ?? FULL_WIDTH_WIDTH;
 
-  const PARSE_BLOCKS: [RegExp, number, boolean][] = [
-    [LATIN_RE, REGULAR_WIDTH, false],
-    [ANSI_RE, ANSI_WIDTH, false],
-    [ANSI_URL_RE, REGULAR_WIDTH, true],
-    [CONTROL_RE, CONTROL_WIDTH, false],
-    [TAB_RE, TAB_WIDTH, false],
-    [EMOJI_RE, EMOJI_WIDTH, false],
-    [CJKT_WIDE_RE, WIDE_WIDTH, false]
+  const PARSE_BLOCKS: [RegExp, number][] = [
+    [LATIN_RE, REGULAR_WIDTH],
+    [ANSI_RE, ANSI_WIDTH],
+    [CONTROL_RE, CONTROL_WIDTH],
+    [TAB_RE, TAB_WIDTH],
+    [EMOJI_RE, EMOJI_WIDTH],
+    [CJKT_WIDE_RE, WIDE_WIDTH]
   ];
 
   /* STATE */
@@ -112,15 +110,13 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
     for ( let i = 0, l = PARSE_BLOCKS.length; i < l; i++ ) {
 
-      const [BLOCK_RE, BLOCK_WIDTH, hasCapturingGroup] = PARSE_BLOCKS[i];
+      const [BLOCK_RE, BLOCK_WIDTH] = PARSE_BLOCKS[i];
 
       BLOCK_RE.lastIndex = index;
 
-      const result = hasCapturingGroup ? BLOCK_RE.exec ( input ) : BLOCK_RE.test ( input );
+      if ( BLOCK_RE.test ( input ) ) {
 
-      if ( result ) {
-
-        lengthExtra = ( result === true ) ? ( BLOCK_RE === EMOJI_RE ? 1 : BLOCK_RE.lastIndex - index ) : result[1].length;
+        lengthExtra = BLOCK_RE === EMOJI_RE ? 1 : BLOCK_RE.lastIndex - index;
         widthExtra = lengthExtra * BLOCK_WIDTH;
 
         if ( ( width + widthExtra ) > truncationLimit ) {

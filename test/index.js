@@ -54,7 +54,6 @@ describe ( 'Fast String Width', () => {
       t.is ( getWidth ( '안녕하세요' ), 10 );
       t.is ( getWidth ( 'A\uD83D\uDE00BC' ), 5 );
       t.is ( getWidth ( '\u001B[31m\u001B[39m' ), 0 );
-      // t.is ( getWidth ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007' ), 5 ); //TODO: Maybe support these extra escapes too?
       t.is ( getWidth ( '\u{231A}' ), 2 );
       t.is ( getWidth ( '\u{2194}\u{FE0F}' ), 2 );
       t.is ( getWidth ( '\u{1F469}' ), 2 );
@@ -185,11 +184,11 @@ describe ( 'Fast String Width', () => {
 
     });
 
-    it ( 'supports hyperlink sequences', t => {
+    it ( 'supports hyperlinks', t => {
 
-      t.is ( getWidth ( '\x1b]8;;https://github.com\u0007Click\x1b]8;;\u0007' ), 5 );
-      t.is ( getWidth ( 'twelve chars\x1b]8;;https://github.com\u0007Click\x1b]8;;\u0007twelve chars' ), 24 + 5 );
-      t.is ( getWidth ( '\x1b]8;;https://github.com\x1b\x5cClick\x1b]8;;\x1b\x5c' ), 5 );
+      t.is ( getWidth ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007' ), 5 );
+      t.is ( getWidth ( 'twelve chars\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007twelve chars' ), 24 + 5 );
+      t.is ( getWidth ( '\u001B]8;;https://github.com\u001B\u005CClick\u001B]8;;\u001B\u005C' ), 5 );
 
     });
 
@@ -283,6 +282,17 @@ describe ( 'Fast String Width', () => {
       t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 2, ellipsis: '…' } ), '…' );
       t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 1, ellipsis: '…' } ), '…' );
       t.is ( getTruncated ( '👩‍👩‍👦‍👦👨‍❤️‍💋‍👨', { limit: 0, ellipsis: '…' } ), '' );
+
+    });
+
+    it ( 'supports hyperlinks', t => {
+
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 5, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007' );
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 4, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007Cli…' );
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 3, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007Cl…' );
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 2, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007C…' );
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 1, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007…' );
+      t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 0, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007' );
 
     });
 
