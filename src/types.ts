@@ -9,12 +9,10 @@ type TruncationOptions = {
 
 type WidthOptions = {
   /* SPECIAL */
-  ansiWidth?: number,
   controlWidth?: number,
   tabWidth?: number,
-  /* UNICODE */
+  /* OTHERS */
   emojiWidth?: number,
-  fullWidthWidth?: number,
   regularWidth?: number,
   wideWidth?: number
 };

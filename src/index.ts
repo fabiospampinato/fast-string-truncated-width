@@ -26,14 +26,14 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   const ELLIPSIS = truncationOptions.ellipsis ?? '';
   const ELLIPSIS_WIDTH = truncationOptions?.ellipsisWidth ?? ( ELLIPSIS ? getStringTruncatedWidth ( ELLIPSIS, NO_TRUNCATION, widthOptions ).width : 0 );
 
-  const ANSI_WIDTH = widthOptions.ansiWidth ?? 0;
+  const ANSI_WIDTH = 0;
   const CONTROL_WIDTH = widthOptions.controlWidth ?? 0;
   const TAB_WIDTH = widthOptions.tabWidth ?? 8;
 
   const EMOJI_WIDTH = widthOptions.emojiWidth ?? 2;
-  const FULL_WIDTH_WIDTH = widthOptions.fullWidthWidth ?? 2;
+  const FULL_WIDTH_WIDTH = 2;
   const REGULAR_WIDTH = widthOptions.regularWidth ?? 1;
-  const WIDE_WIDTH = widthOptions.wideWidth ?? 2;
+  const WIDE_WIDTH = widthOptions.wideWidth ?? FULL_WIDTH_WIDTH;
 
   const PARSE_BLOCKS: [RegExp, number, boolean][] = [
     [LATIN_RE, REGULAR_WIDTH, false],
