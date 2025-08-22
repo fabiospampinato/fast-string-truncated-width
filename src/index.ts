@@ -35,14 +35,14 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   const REGULAR_WIDTH = widthOptions.regularWidth ?? 1;
   const WIDE_WIDTH = widthOptions.wideWidth ?? 2;
 
-  const PARSE_BLOCKS: [RegExp, number][] = [
-    [LATIN_RE, REGULAR_WIDTH],
-    [ANSI_URL_RE, REGULAR_WIDTH],
-    [ANSI_RE, ANSI_WIDTH],
-    [CONTROL_RE, CONTROL_WIDTH],
-    [TAB_RE, TAB_WIDTH],
-    [EMOJI_RE, EMOJI_WIDTH],
-    [CJKT_WIDE_RE, WIDE_WIDTH]
+  const PARSE_BLOCKS: [RegExp, number, boolean][] = [
+    [LATIN_RE, REGULAR_WIDTH, false],
+    [ANSI_RE, ANSI_WIDTH, false],
+    [ANSI_URL_RE, REGULAR_WIDTH, true],
+    [CONTROL_RE, CONTROL_WIDTH, false],
+    [TAB_RE, TAB_WIDTH, false],
+    [EMOJI_RE, EMOJI_WIDTH, false],
+    [CJKT_WIDE_RE, WIDE_WIDTH, false]
   ];
 
   /* STATE */
@@ -112,22 +112,15 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
     for ( let i = 0, l = PARSE_BLOCKS.length; i < l; i++ ) {
 
-      const [BLOCK_RE, BLOCK_WIDTH] = PARSE_BLOCKS[i];
+      const [BLOCK_RE, BLOCK_WIDTH, hasCapturingGroup] = PARSE_BLOCKS[i];
 
       BLOCK_RE.lastIndex = index;
 
-      const reResult = BLOCK_RE.exec ( input );
+      const result = hasCapturingGroup ? BLOCK_RE.exec ( input ) : BLOCK_RE.test ( input );
 
-      if ( reResult !== null ) {
+      if ( result ) {
 
-        if ( BLOCK_RE === EMOJI_RE ) {
-          lengthExtra = 1;
-        } else if ( BLOCK_RE === ANSI_URL_RE ) {
-          lengthExtra = reResult[1].length;
-        } else {
-          lengthExtra = BLOCK_RE.lastIndex - index;
-        }
-
+        lengthExtra = ( result === true ) ? ( BLOCK_RE === EMOJI_RE ? 1 : BLOCK_RE.lastIndex - index ) : result[1].length;
         widthExtra = lengthExtra * BLOCK_WIDTH;
 
         if ( ( width + widthExtra ) > truncationLimit ) {
