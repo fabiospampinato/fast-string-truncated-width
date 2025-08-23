@@ -52,8 +52,6 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
   let truncationEnabled = false;
   let truncationIndex = length;
   let truncationLimit = Math.max ( 0, LIMIT - ELLIPSIS_WIDTH );
-  let unmatchedStart = 0;
-  let unmatchedEnd = 0;
   let width = 0;
   let widthExtra = 0;
 
@@ -64,9 +62,9 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
     /* UNMATCHED */
 
-    if ( ( unmatchedEnd > unmatchedStart ) || ( index >= length && index > indexPrev ) ) {
+    if ( index > indexPrev ) {
 
-      const unmatched = input.slice ( unmatchedStart, unmatchedEnd ) || input.slice ( indexPrev, index );
+      const unmatched = input.slice ( indexPrev, index );
 
       lengthExtra = 0;
 
@@ -83,7 +81,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
         }
 
         if ( ( width + widthExtra ) > truncationLimit ) {
-          truncationIndex = Math.min ( truncationIndex, Math.max ( unmatchedStart, indexPrev ) + lengthExtra );
+          truncationIndex = Math.min ( truncationIndex, indexPrev + lengthExtra );
         }
 
         if ( ( width + widthExtra ) > LIMIT ) {
@@ -96,7 +94,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
       }
 
-      unmatchedStart = unmatchedEnd = 0;
+      indexPrev = index;
 
     }
 
@@ -129,8 +127,6 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
         }
 
         width += widthExtra;
-        unmatchedStart = indexPrev;
-        unmatchedEnd = index;
         index = indexPrev = BLOCK_RE.lastIndex;
 
         continue outer;
@@ -141,7 +137,7 @@ const getStringTruncatedWidth = ( input: string, truncationOptions: TruncationOp
 
     /* UNMATCHED INDEX */
 
-    index += 1;
+    index += ( input.codePointAt(index) || 0 ) > 0xffff ? 2 : 1;
 
   }
 
