@@ -192,6 +192,12 @@ describe ( 'Fast String Width', () => {
 
     });
 
+    it ( 'supports surrogate pairs', t => {
+
+      t.is ( getWidth ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d' ), 10 );
+
+    });
+
   });
 
   describe ( 'truncating a string', it => {
@@ -293,6 +299,22 @@ describe ( 'Fast String Width', () => {
       t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 2, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007C…' );
       t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 1, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007…' );
       t.is ( getTruncated ( '\u001B]8;;https://github.com\u0007Click\u001B]8;;\u0007', { limit: 0, ellipsis: '…' } ), '\u001B]8;;https://github.com\u0007' );
+
+    });
+
+    it ( 'supports surrogate pairs', t => {
+
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 10, ellipsis: '…' } ), 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 9, ellipsis: '…' } ), 'a\uD83C\uDE00b\uD83C\uDE00c…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 8, ellipsis: '…' } ), 'a\uD83C\uDE00b\uD83C\uDE00c…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 7, ellipsis: '…' } ), 'a\uD83C\uDE00b\uD83C\uDE00…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 6, ellipsis: '…' } ), 'a\uD83C\uDE00b…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 5, ellipsis: '…' } ), 'a\uD83C\uDE00b…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 4, ellipsis: '…' } ), 'a\uD83C\uDE00…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 3, ellipsis: '…' } ), 'a…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 2, ellipsis: '…' } ), 'a…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 1, ellipsis: '…' } ), '…' );
+      t.is ( getTruncated ( 'a\uD83C\uDE00b\uD83C\uDE00c\uD83C\uDE00d', { limit: 0, ellipsis: '…' } ), '' );
 
     });
 
