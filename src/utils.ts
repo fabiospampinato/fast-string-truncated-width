@@ -1,6 +1,28 @@
 
 /* MAIN */
 
+const getCodePointsLength = (() => {
+
+  const SURROGATE_PAIR_RE = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+  return ( input: string ): number => {
+
+    let surrogatePairsNr = 0;
+
+    SURROGATE_PAIR_RE.lastIndex = 0;
+
+    while ( SURROGATE_PAIR_RE.test ( input ) ) {
+
+       surrogatePairsNr += 1;
+
+    }
+
+    return input.length - surrogatePairsNr;
+
+  };
+
+})();
+
 const isFullWidth = ( x: number ): boolean => {
 
   return x === 0x3000 || x >= 0xFF01 && x <= 0xFF60 || x >= 0xFFE0 && x <= 0xFFE6;
@@ -15,4 +37,4 @@ const isWideNotCJKTNotEmoji = ( x: number ): boolean => {
 
 /* EXPORT */
 
-export {isFullWidth, isWideNotCJKTNotEmoji};
+export {getCodePointsLength, isFullWidth, isWideNotCJKTNotEmoji};
